@@ -1,0 +1,8 @@
+.project
+.settings
+.classpath
+.DS_Store
+.idea
+*.log
+*.iml
+bin/

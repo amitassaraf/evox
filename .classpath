@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="jars/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="jars/jinput.jar"/>
+	<classpathentry kind="lib" path="jars/jsonbeans-0.5.jar"/>
+	<classpathentry kind="lib" path="jars/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
+	<classpathentry kind="lib" path="jars/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="jars/lwjgl.jar"/>
+	<classpathentry kind="lib" path="jars/PNGDecoder.jar"/>
+	<classpathentry kind="lib" path="jars/slick.jar"/>
+	<classpathentry kind="lib" path="jars/vecmath-1.5.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
