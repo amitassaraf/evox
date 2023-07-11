@@ -2,9 +2,13 @@
 package org.amitassaraf.evox.core.voxels;
 
 import java.nio.FloatBuffer;
+
 import org.amitassaraf.evox.core.Chunk;
+
 import static org.amitassaraf.evox.core.Constants.*;
+
 import org.amitassaraf.evox.view.TextureAtlas;
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -120,14 +124,26 @@ public class Voxel {
 	 */
 	public int renderVoxel(FloatBuffer buff, Chunk node, Vector3f offset,
 			byte face, byte[] lights, TextureAtlas atlas) {
+		float size = VOXEL_SIZE;
+
 		float rx = node.getBoundingbox().getMinX();
 		float ry = node.getBoundingbox().getMinY();
 		float rz = node.getBoundingbox().getMinZ();
 		rx += offset.x;
 		ry += offset.y;
 		rz += offset.z;
-		float size = VOXEL_SIZE;
-
+		
+		Matrix4f mat = new Matrix4f();
+		//System.out.println("++++++");
+		//System.out.println(new Vector3f(rx, ry, rz));
+		//System.out.println(mat);
+		mat.translate(new Vector3f(size, size, size));
+		mat.rotate((float) Math.toRadians(45f), new Vector3f(0f, 1f, 0f), mat);
+		
+		float mx = size + rx + mat.m00 + mat.m02;
+		float my = size + ry;
+		float mz = size + rz + mat.m20 + mat.m22;
+		
 		float baseColor = .086f;
 
 		int faceCount = 0;
@@ -141,27 +157,27 @@ public class Voxel {
 			// System.out.println(lights[SIDE_TOP]);
 			Vector2f st = atlas.getCoordinate(this.VoxelData.faceTexture[0]);
 			Vector2f ste = atlas.getEndCoordinate(st);
-			buff.put(size + rx).put(size + ry).put(rz).put(1f); // Top Right Of
+			buff.put(mx).put(my).put(rz).put(1f); // Top Right Of
 																// The Quad
 			// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(-1.0f).put(0.0f); // Normal
 			buff.put(ste.getX()).put(ste.getY());
 
-			buff.put(rx).put(size + ry).put(rz).put(1f); // Top Left Of The Quad
+			buff.put(rx).put(my).put(rz).put(1f); // Top Left Of The Quad
 															// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(-1.0f).put(0.0f); // Normal
 			buff.put(st.getX()).put(ste.getY());
 
-			buff.put(rx).put(size + ry).put(size + rz).put(1f); // Bottom Left
+			buff.put(rx).put(my).put(mz).put(1f); // Bottom Left
 																// Of The
 			// Quad (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(-1.0f).put(0.0f); // Normal
 			buff.put(st.getX()).put(st.getY());
 
-			buff.put(size + rx).put(size + ry).put(size + rz).put(1f); // Bottom
+			buff.put(mx).put(my).put(mz).put(1f); // Bottom
 																		// Right
 			// Of The Quad
 			// (Top)
@@ -178,14 +194,14 @@ public class Voxel {
 
 			Vector2f st = atlas.getCoordinate(this.VoxelData.faceTexture[1]);
 			Vector2f ste = atlas.getEndCoordinate(st);
-			buff.put(size + rx).put(+ry).put(size + rz).put(1f); // Top Right Of
+			buff.put(mx).put(+ry).put(mz).put(1f); // Top Right Of
 																	// The
 			// Quad (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(1.0f).put(0.0f); // Normal
 			buff.put(ste.getX()).put(ste.getY());
 
-			buff.put(rx).put(ry).put(size + rz).put(1f); // Top Left Of The Quad
+			buff.put(rx).put(ry).put(mz).put(1f); // Top Left Of The Quad
 															// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(1.0f).put(0.0f); // Normal
@@ -197,7 +213,7 @@ public class Voxel {
 			buff.put(0.0f).put(1.0f).put(0.0f); // Normal
 			buff.put(st.getX()).put(st.getY());
 
-			buff.put(size + rx).put(ry).put(rz).put(1f); // Bottom Right Of The
+			buff.put(mx).put(ry).put(rz).put(1f); // Bottom Right Of The
 															// Quad
 			// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
@@ -213,7 +229,7 @@ public class Voxel {
 
 			Vector2f st = atlas.getCoordinate(this.VoxelData.faceTexture[2]);
 			Vector2f ste = atlas.getEndCoordinate(st);
-			buff.put(size + rx).put(ry).put(rz).put(1f); // Top Right Of The
+			buff.put(mx).put(ry).put(rz).put(1f); // Top Right Of The
 															// Quad (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(0.0f).put(1.0f); // Normal
@@ -224,14 +240,14 @@ public class Voxel {
 			buff.put(0.0f).put(0.0f).put(1.0f); // Normal
 			buff.put(st.getX()).put(ste.getY());
 
-			buff.put(rx).put(size + ry).put(rz).put(1f); // Bottom Left Of The
+			buff.put(rx).put(my).put(rz).put(1f); // Bottom Left Of The
 															// Quad
 			// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(0.0f).put(1.0f); // Normal
 			buff.put(st.getX()).put(st.getY());
 
-			buff.put(size + rx).put(size + ry).put(rz).put(1f); // Bottom Right
+			buff.put(mx).put(my).put(rz).put(1f); // Bottom Right
 																// Of The
 			// Quad (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
@@ -246,20 +262,20 @@ public class Voxel {
 
 			Vector2f st = atlas.getCoordinate(this.VoxelData.faceTexture[3]);
 			Vector2f ste = atlas.getEndCoordinate(st);
-			buff.put(rx).put(ry).put(size + rz).put(1f); // Top Right Of The
+			buff.put(rx).put(ry).put(mz).put(1f); // Top Right Of The
 															// Quad (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(0.0f).put(-1.0f); // Normal
 			buff.put(ste.getX()).put(ste.getY());
 
-			buff.put(size + rx).put(ry).put(size + rz).put(1f); // Top Left Of
+			buff.put(mx).put(ry).put(mz).put(1f); // Top Left Of
 																// The Quad
 			// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(0.0f).put(0.0f).put(-1.0f); // Normal
 			buff.put(st.getX()).put(ste.getY());
 
-			buff.put(size + rx).put(size + ry).put(size + rz).put(1f); // Bottom
+			buff.put(mx).put(my).put(mz).put(1f); // Bottom
 																		// Left
 																		// Of
 			// The Quad
@@ -268,7 +284,7 @@ public class Voxel {
 			buff.put(0.0f).put(0.0f).put(-1.0f); // Normal
 			buff.put(st.getX()).put(st.getY());
 
-			buff.put(rx).put(size + ry).put(size + rz).put(1f); // Bottom Right
+			buff.put(rx).put(my).put(mz).put(1f); // Bottom Right
 																// Of The
 			// Quad (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
@@ -289,20 +305,20 @@ public class Voxel {
 			buff.put(1.0f).put(0.0f).put(0.0f); // Normal
 			buff.put(ste.getX()).put(ste.getY());
 
-			buff.put(rx).put(ry).put(size + rz).put(1f); // Top Left Of The Quad
+			buff.put(rx).put(ry).put(mz).put(1f); // Top Left Of The Quad
 															// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(1.0f).put(0.0f).put(0.0f); // Normal
 			buff.put(st.getX()).put(ste.getY());
 
-			buff.put(rx).put(size + ry).put(size + rz).put(1f); // Bottom Left
+			buff.put(rx).put(my).put(mz).put(1f); // Bottom Left
 																// Of The
 			// Quad (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(1.0f).put(0.0f).put(0.0f); // Normal
 			buff.put(st.getX()).put(st.getY());
 
-			buff.put(rx).put(size + ry).put(rz).put(1f); // Bottom Right Of The
+			buff.put(rx).put(my).put(rz).put(1f); // Bottom Right Of The
 															// Quad
 			// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
@@ -317,27 +333,27 @@ public class Voxel {
 
 			Vector2f st = atlas.getCoordinate(this.VoxelData.faceTexture[5]);
 			Vector2f ste = atlas.getEndCoordinate(st);
-			buff.put(size + rx).put(ry).put(size + rz).put(1f); // Top Right Of
+			buff.put(mx).put(ry).put(mz).put(1f); // Top Right Of
 																// The Quad
 			// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(-1.0f).put(0.0f).put(0.0f); // Normal
 			buff.put(ste.getX()).put(ste.getY());
 
-			buff.put(size + rx).put(ry).put(rz).put(1f); // Top Left Of The Quad
+			buff.put(mx).put(ry).put(rz).put(1f); // Top Left Of The Quad
 															// (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(-1.0f).put(0.0f).put(0.0f); // Normal
 			buff.put(st.getX()).put(ste.getY());
 
-			buff.put(size + rx).put(size + ry).put(rz).put(1f); // Bottom Left
+			buff.put(mx).put(my).put(rz).put(1f); // Bottom Left
 																// Of The
 			// Quad (Top)
 			buff.put(colorValue).put(colorValue).put(colorValue).put(1f);
 			buff.put(-1.0f).put(0.0f).put(0.0f); // Normal
 			buff.put(st.getX()).put(st.getY());
 
-			buff.put(size + rx).put(size + ry).put(size + rz).put(1f); // Bottom
+			buff.put(mx).put(my).put(mz).put(1f); // Bottom
 																		// Right
 			// Of The Quad
 			// (Top)
